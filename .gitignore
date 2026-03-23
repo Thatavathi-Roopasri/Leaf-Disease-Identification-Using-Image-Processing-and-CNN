@@ -1,0 +1,43 @@
+# Python cache and build artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Large local datasets and archives
+dataset/
+archive/
+*.zip
+
+# Trained model artifacts
+*.keras
+*.h5
+*.hdf5
+*.ckpt
+
+# Generated evaluation/plot outputs
+*.png
+*.jpg
+*.jpeg
+*.svg
+
+# Logs and temp
+*.log
+*.tmp
+*.bak
+.ipynb_checkpoints/
+
+# Optional local notes
+*.local

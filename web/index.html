@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaf Disease Detector</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>Leaf Health Scanner</h1>
+      <p class="subtitle">Upload a leaf image or scan from camera to detect healthy vs disease.</p>
+
+      <div class="controls">
+        <label class="btn" for="fileInput">Upload Image</label>
+        <button id="cameraBtn" class="btn secondary" type="button">Use Camera</button>
+        <button id="captureBtn" class="btn secondary" type="button" disabled>Capture</button>
+        <input id="fileInput" type="file" accept="image/*">
+      </div>
+
+      <div class="media-grid">
+        <div>
+          <h3>Camera</h3>
+          <video id="camera" autoplay playsinline class="hidden"></video>
+        </div>
+        <div>
+          <h3>Selected Image</h3>
+          <img id="preview" alt="Leaf preview">
+        </div>
+      </div>
+
+      <canvas id="captureCanvas" class="hidden"></canvas>
+
+      <div class="actions">
+        <button id="predictBtn" class="btn primary" type="button" disabled>Predict</button>
+      </div>
+
+      <section id="result" class="result hidden">
+        <h2>Result</h2>
+        <p id="statusText"></p>
+        <p id="plantText"></p>
+        <p id="diseaseText"></p>
+        <p id="confidenceText"></p>
+        <p id="messageText"></p>
+        <h3>Top Predictions</h3>
+        <ul id="topPredictions"></ul>
+      </section>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
