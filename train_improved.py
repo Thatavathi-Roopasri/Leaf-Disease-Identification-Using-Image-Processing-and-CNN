@@ -224,8 +224,7 @@ callbacks_phase1 = [
     )
 ]
 
-# Calculate steps per epoch for combined dataset
-steps_per_epoch_phase1 = len(train_files) // BATCH_SIZE  # Use combined size
+# Reuse steps_per_epoch_phase1 computed above (supports both main-only and combined datasets)
 
 history_init = model.fit(
     train_combined,
