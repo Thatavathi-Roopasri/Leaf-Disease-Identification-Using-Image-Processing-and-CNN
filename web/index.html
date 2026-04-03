@@ -26,7 +26,22 @@
         </div>
         <div>
           <h3>Selected Image</h3>
-          <img id="preview" alt="Leaf preview">
+          <div class="preview-result-layout">
+            <div class="preview-pane">
+              <img id="preview" alt="Leaf preview">
+            </div>
+
+            <section id="result" class="result hidden">
+              <h2>Result</h2>
+              <p id="statusText"></p>
+              <p id="plantText"></p>
+              <p id="diseaseText"></p>
+              <p id="confidenceText"></p>
+              <p id="messageText"></p>
+              <h3>Top Predictions</h3>
+              <ul id="topPredictions"></ul>
+            </section>
+          </div>
         </div>
       </div>
 
@@ -35,17 +50,6 @@
       <div class="actions">
         <button id="predictBtn" class="btn primary" type="button" disabled>Predict</button>
       </div>
-
-      <section id="result" class="result hidden">
-        <h2>Result</h2>
-        <p id="statusText"></p>
-        <p id="plantText"></p>
-        <p id="diseaseText"></p>
-        <p id="confidenceText"></p>
-        <p id="messageText"></p>
-        <h3>Top Predictions</h3>
-        <ul id="topPredictions"></ul>
-      </section>
     </section>
   </main>
 

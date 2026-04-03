@@ -98,10 +98,30 @@ img {
   background: #eff6ef;
 }
 
+#preview {
+  width: min(100%, 520px);
+  min-height: 180px;
+  max-height: 320px;
+  margin: 0 auto;
+}
+
+.preview-result-layout {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.preview-pane {
+  min-width: 0;
+}
+
 .result {
-  margin-top: 18px;
-  border-top: 1px solid var(--border);
-  padding-top: 14px;
+  margin-top: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  background: #f8fcf8;
 }
 
 .hidden {
@@ -124,6 +144,10 @@ img {
 
 @media (max-width: 780px) {
   .media-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .preview-result-layout {
     grid-template-columns: 1fr;
   }
 }

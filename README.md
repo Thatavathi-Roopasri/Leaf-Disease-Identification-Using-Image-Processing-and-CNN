@@ -40,37 +40,29 @@ python train_model.py
 python app_improved.py
 ```
 
-## Deploy On Vercel
-This repo is now prepared for Vercel with:
-- `api/index.py` for the Flask serverless entrypoint
-- `vercel.json` for routing API and static files
-- `.vercelignore` to skip large training folders during upload
+## Deploy On Render
+This repo is prepared for Render as a Flask web service.
 
-### 1. Install and login
-```bash
-npm i -g vercel
-vercel login
-```
+### 1. Push code to GitHub
+Commit and push your repository so Render can pull it.
 
-### 2. Deploy
-From the project root:
-```bash
-vercel
-```
+### 2. Create a Render Web Service
+- Environment: `Python`
+- Build Command: `pip install -r requirements.txt`
+- Start Command: `gunicorn app_improved:app`
 
-For production deployment:
-```bash
-vercel --prod
-```
+### 3. Set environment and deploy
+- Render will provide `PORT` automatically.
+- App binds using `0.0.0.0:$PORT` in production.
 
-### 3. Test after deploy
+### 4. Test after deploy
 - Open `/` for the UI.
-- Call `/health` to verify the API function is running.
-- Upload a leaf image in the web app and test `/predict`.
+- Call `/health` to verify the API is running.
+- Upload a leaf image and test `/predict`.
 
-### Important Vercel Notes
-- TensorFlow-based inference can be slow in serverless cold starts.
-- If prediction times out on Hobby plan, deploy only the frontend on Vercel and move Flask inference API to a long-running host (Render, Railway, Azure App Service), then point frontend requests to that API.
+### Important Render Notes
+- TensorFlow model loading can take time at startup.
+- Use an instance type with enough RAM for model loading and inference.
 
 ## Why This Project Matters
 - Supports faster preliminary disease screening for agriculture.
