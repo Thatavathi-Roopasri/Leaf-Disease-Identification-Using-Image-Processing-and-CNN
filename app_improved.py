@@ -47,7 +47,7 @@ def ensure_resources_loaded():
         class_indices = json.load(f)
         class_labels = {v: k for k, v in class_indices.items()}
 
-    from tensorflow.keras.models import load_model
+    from keras.models import load_model
     model = load_model(selected_model_path, compile=False)
     MODEL_PATH = selected_model_path
     print(f"✓ Loaded model: {MODEL_PATH}")
