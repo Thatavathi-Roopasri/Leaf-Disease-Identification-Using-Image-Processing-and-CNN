@@ -8,8 +8,6 @@ Features:
 """
 
 from flask import Flask, request, jsonify, send_from_directory
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image as keras_image
 import numpy as np
 import json
 import os
@@ -49,6 +47,7 @@ def ensure_resources_loaded():
         class_indices = json.load(f)
         class_labels = {v: k for k, v in class_indices.items()}
 
+    from tensorflow.keras.models import load_model
     model = load_model(selected_model_path, compile=False)
     MODEL_PATH = selected_model_path
     print(f"✓ Loaded model: {MODEL_PATH}")
@@ -171,7 +170,7 @@ def predict():
         img_stream = io.BytesIO(file.read())
         img = Image.open(img_stream).convert('RGB')
         img = img.resize((224, 224))
-        img_array = keras_image.img_to_array(img)
+        img_array = np.asarray(img, dtype=np.float32)
         img_array = np.expand_dims(img_array, axis=0)
         img_array = img_array / 255.0
         
