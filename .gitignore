@@ -26,6 +26,7 @@ archive/
 *.h5
 *.hdf5
 *.ckpt
+!cnn_model.keras
 
 # Generated evaluation/plot outputs
 *.png
