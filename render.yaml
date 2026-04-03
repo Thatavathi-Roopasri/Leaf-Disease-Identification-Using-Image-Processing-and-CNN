@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: plant-disease-detector
+    runtime: python
+    startCommand: gunicorn app:app
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
