@@ -49,7 +49,7 @@ Commit and push your repository so Render can pull it.
 ### 2. Create a Render Web Service
 - Environment: `Python`
 - Build Command: `pip install -r requirements.txt`
-- Start Command: `gunicorn app_improved:app`
+- Start Command: `gunicorn app:app`
 
 ### 3. Set environment and deploy
 - Render will provide `PORT` automatically.
