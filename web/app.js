@@ -16,6 +16,24 @@ const topPredictions = document.getElementById("topPredictions");
 
 let selectedBlob = null;
 let mediaStream = null;
+let warmupPromise = null;
+
+async function warmupModel() {
+  if (warmupPromise) return warmupPromise;
+
+  warmupPromise = fetch("/info")
+    .then(async (response) => {
+      const body = await response.text();
+      try {
+        return JSON.parse(body);
+      } catch {
+        return null;
+      }
+    })
+    .catch(() => null);
+
+  return warmupPromise;
+}
 
 function setPreviewFromBlob(blob) {
   const url = URL.createObjectURL(blob);
@@ -55,6 +73,7 @@ fileInput.addEventListener("change", (event) => {
   const file = event.target.files[0];
   if (!file) return;
   setPreviewFromBlob(file);
+  warmupModel();
 });
 
 cameraBtn.addEventListener("click", async () => {
@@ -87,6 +106,7 @@ captureBtn.addEventListener("click", async () => {
       return;
     }
     setPreviewFromBlob(blob);
+    warmupModel();
   }, "image/jpeg", 0.92);
 });
 
@@ -100,12 +120,21 @@ predictBtn.addEventListener("click", async () => {
   predictBtn.textContent = "Predicting...";
 
   try {
+    await warmupModel();
+
     const response = await fetch("/predict", {
       method: "POST",
       body: formData,
     });
 
-    const data = await response.json();
+    const raw = await response.text();
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      throw new Error("Server returned an invalid response. Please wait 20-30 seconds and try Predict again.");
+    }
+
     if (!response.ok) {
       throw new Error(data.error || "Prediction failed.");
     }
