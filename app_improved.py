@@ -22,19 +22,36 @@ app = Flask(__name__)
 MODEL_PATH = 'cnn_model_improved.keras'
 LABEL_MAP_PATH = 'label_mapping.json'
 
-# Load model
-if os.path.exists(MODEL_PATH):
-    model = load_model(MODEL_PATH)
-    print(f"✓ Loaded improved model: {MODEL_PATH}")
-else:
-    print(f"⚠ {MODEL_PATH} not found. Using fallback...")
-    MODEL_PATH = 'cnn_model.keras'
-    model = load_model(MODEL_PATH)
+model = None
+class_indices = None
+class_labels = None
 
-# Load label mapping
-with open(LABEL_MAP_PATH, 'r') as f:
-    class_indices = json.load(f)
-    class_labels = {v: k for k, v in class_indices.items()}
+
+def ensure_resources_loaded():
+    """Lazy-load model and labels so server startup stays fast on Render."""
+    global model, class_indices, class_labels, MODEL_PATH
+
+    if model is not None and class_labels is not None:
+        return
+
+    selected_model_path = MODEL_PATH
+    if not os.path.exists(selected_model_path):
+        print(f"⚠ {selected_model_path} not found. Using fallback...")
+        selected_model_path = 'cnn_model.keras'
+
+    if not os.path.exists(selected_model_path):
+        raise FileNotFoundError('No model file found. Expected cnn_model_improved.keras or cnn_model.keras')
+
+    if not os.path.exists(LABEL_MAP_PATH):
+        raise FileNotFoundError(f"Missing label mapping file: {LABEL_MAP_PATH}")
+
+    with open(LABEL_MAP_PATH, 'r') as f:
+        class_indices = json.load(f)
+        class_labels = {v: k for k, v in class_indices.items()}
+
+    model = load_model(selected_model_path, compile=False)
+    MODEL_PATH = selected_model_path
+    print(f"✓ Loaded model: {MODEL_PATH}")
 
 # ============== CONFUSION PAIR DEFINITIONS ==============
 # These pairs are known to be confused by the model
@@ -142,6 +159,8 @@ def frontend_css():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
+        ensure_resources_loaded()
+
         # Check if image is provided
         if 'image' not in request.files:
             return jsonify({'error': 'No image provided', 'status': 'ERROR'}), 400
@@ -252,10 +271,12 @@ def predict():
 
 @app.route('/health', methods=['GET'])
 def health():
+    resources_loaded = model is not None and class_labels is not None
     return jsonify({
         'status': 'ok',
         'model': 'improved' if 'improved' in MODEL_PATH else 'standard',
-        'classes': len(class_labels),
+        'resources_loaded': resources_loaded,
+        'classes': len(class_labels) if class_labels is not None else 0,
         'confusing_pairs': len(CONFUSING_PAIRS)
     })
 
@@ -263,6 +284,7 @@ def health():
 
 @app.route('/info', methods=['GET'])
 def info():
+    ensure_resources_loaded()
     return jsonify({
         'model_path': MODEL_PATH,
         'classes': list(sorted(set([extract_plant_type(c) for c in class_labels.values()]))),
@@ -278,6 +300,7 @@ def info():
     })
 
 if __name__ == '__main__':
+    ensure_resources_loaded()
     print("🌱 Plant Disease Detection API (Improved Model)")
     print(f"   Model: {MODEL_PATH}")
     print(f"   Classes: {len(class_labels)}")
